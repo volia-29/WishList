@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WishList.BusinessLogic.Models;
-using WishList.Infrastructure.Models;
-using WishList.Infrastructure.Repositories;
+using WishList.Services.Interfaces;
 
 namespace WishList.App.Controller
 {
@@ -9,23 +8,36 @@ namespace WishList.App.Controller
     [ApiController]
     public class WishesController : ControllerBase
     {
-        private readonly IConfiguration configuration;
-        private readonly UserRepository userRepository;
-        private readonly WishRepository wishRepository;
+        private readonly IWishService wishService;
 
-        public WishesController(UserRepository userRepository, WishRepository wishRepository, IConfiguration configuration)
+        public WishesController(IWishService wishService)
         {
-            this.configuration = configuration;
-            this.userRepository = userRepository;
-            this.wishRepository = wishRepository;
+            this.wishService = wishService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetAllWishesAsync()
+        [HttpPost]
+        public async Task<ActionResult> CreateWishAsync(CreateWishDto wish)
         {
-            //this.HttpContext.Request.
-            //configuration["test-url"]
-            return Ok(await wishRepository.GetAllWishesAsync());
+            await wishService.AddWishAsync(wish.UserId, wish);
+            return Ok();
+        }
+
+        [HttpGet("all-wishes")]
+        public async Task<ActionResult> GetUserWishesAsync(int userId)
+        {
+            return Ok(await wishService.GetAllUserWishesAsync(userId));
+        }
+
+        [HttpGet("available-wishes")]
+        public async Task<ActionResult> GetAllWishesAsync(int userId)
+        {
+            return Ok(await wishService.GetAvailableUserWishesAsync(userId));
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteWish(int wishId)
+        {
+            return Ok(await wishService.DeleteWishAsync(wishId));
         }
     }
 }

@@ -1,47 +1,44 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WishList.BusinessLogic.Models;
 using WishList.Infrastructure.Models;
-using WishList.Infrastructure.Repositories;
+using WishList.Services.Interfaces;
 
 namespace WishList.App.Controller
 {
-    [Route("users")]
+    [Route("[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserRepository userRepository;
+        private readonly IUserService userService;
 
-        public UsersController(UserRepository userRepository)
+        public UsersController(IUserService userService)
         {
-            this.userRepository = userRepository;
+            this.userService = userService;
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateUserAsync(CreateUserDto user)
         {
-            await userRepository.AddAsync(new User()
-            {
-                Name = user.Name
-            });
+            await userService.AddAsync(user);
             return Ok();
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
-            return Ok(await userRepository.GetAllUsersAsync());
+            return Ok(await userService.GetAllUsersAsync());
         }
 
         [HttpDelete]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            return Ok(await userRepository.DeleteUser(id));
+            return Ok(await userService.DeleteUser(id));
         }
 
         [HttpPut]
         public async Task<ActionResult> UpdateUser(int id, UpdateUserDto user)
         {
-            await userRepository.UpdateUser(id, user.Name);
+            await userService.UpdateUser(id, user.Name);
             return Ok();
         }
     }

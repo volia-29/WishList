@@ -4,5 +4,6 @@
     {
         public int UserId { get; set; }
         public int WishId { get; set; }
+        public bool Select { get; set; }
     }
 }

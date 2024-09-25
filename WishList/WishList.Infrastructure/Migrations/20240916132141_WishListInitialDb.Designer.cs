@@ -11,7 +11,7 @@ using WishList.Infrastructure.Data;
 namespace WishList.Infrastructure.Migrations
 {
     [DbContext(typeof(WishListContext))]
-    [Migration("20240909125653_WishListInitialDb")]
+    [Migration("20240916132141_WishListInitialDb")]
     partial class WishListInitialDb
     {
         /// <inheritdoc />

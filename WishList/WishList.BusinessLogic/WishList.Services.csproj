@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WishList.Infrastructure\WishList.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

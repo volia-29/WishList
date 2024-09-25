@@ -1,44 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WishList.BusinessLogic.Models;
-using WishList.Infrastructure.Models;
-using WishList.Infrastructure.Repositories;
+using WishList.Services.Interfaces;
 
 namespace WishList.App.Controller
 {
-    [Route("wish")]
+    [Route("[controller]")]
     [ApiController]
     public class WishController : ControllerBase
     {
-        private readonly UserRepository userRepository;
-        private readonly WishRepository wishRepository;
+        private readonly IUserService userService;
+        private readonly IWishService wishService;
 
-        public WishController(UserRepository userRepository, WishRepository wishRepository)
+        public WishController(IUserService userService, IWishService wishService)
         {
-            this.userRepository = userRepository;
-            this.wishRepository = wishRepository;
+            this.userService = userService;
+            this.wishService = wishService;
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateWishAsync(CreateWishDto wish)
+        public async Task<ActionResult> ChoiceOfWishAsync(ChoseWishDto choseWish)
         {
-            await userRepository.AddWishAsync(wish.UserId, new Wish()
-            {
-                Description = wish.Description,
-
-            });
+            var user = await userService.GetByIdAsync(choseWish.UserId);
+            await wishService.ChooseWishAsync(user, choseWish);
             return Ok();
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> GetUserWishesAsync(int userId)
-        {
-            return Ok(await userRepository.GetUserWishesAsync(userId));
-        }
-
-        [HttpGet("all-wishes")]
-        public async Task<ActionResult> GetAllWishesAsync()
-        {
-            return Ok(await wishRepository.GetAllWishesAsync());
         }
     }
 }
