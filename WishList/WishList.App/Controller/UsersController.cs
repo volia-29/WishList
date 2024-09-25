@@ -31,5 +31,18 @@ namespace WishList.App.Controller
         {
             return Ok(await userRepository.GetAllUsersAsync());
         }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteUser(int id)
+        {
+            return Ok(await userRepository.DeleteUser(id));
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(int id, UpdateUserDto user)
+        {
+            await userRepository.UpdateUser(id, user.Name);
+            return Ok();
+        }
     }
 }

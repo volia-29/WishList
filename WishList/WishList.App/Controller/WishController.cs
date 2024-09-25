@@ -10,10 +10,12 @@ namespace WishList.App.Controller
     public class WishController : ControllerBase
     {
         private readonly UserRepository userRepository;
+        private readonly WishRepository wishRepository;
 
-        public WishController(UserRepository userRepository)
+        public WishController(UserRepository userRepository, WishRepository wishRepository)
         {
             this.userRepository = userRepository;
+            this.wishRepository = wishRepository;
         }
 
         [HttpPost]
@@ -31,6 +33,12 @@ namespace WishList.App.Controller
         public async Task<ActionResult> GetUserWishesAsync(int userId)
         {
             return Ok(await userRepository.GetUserWishesAsync(userId));
+        }
+
+        [HttpGet("all-wishes")]
+        public async Task<ActionResult> GetAllWishesAsync()
+        {
+            return Ok(await wishRepository.GetAllWishesAsync());
         }
     }
 }

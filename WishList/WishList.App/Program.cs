@@ -11,13 +11,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<WishListContext>(options => options.UseSqlite("Data Source=WishList.db", b => b.MigrationsAssembly("WishList.Infrastructure")));
 
+var connectionString = builder.Configuration["ConnectionStrings:WishListDB"];
+builder.Services.AddDbContext<WishListContext>(options => options.UseSqlite(connectionString, b => b.MigrationsAssembly("WishList.Infrastructure")));
+
+//builder.Services.AddTransient<UserRepository>();
 builder.Services.AddScoped<UserRepository>();
+//builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<WishRepository>();
 
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+
+app.Map("/map1", MyMethod);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
@@ -26,3 +35,11 @@ app.UseSwaggerUI();
 app.MapControllers();
 
 app.Run();
+
+static void MyMethod(IApplicationBuilder app)
+{
+    app.Run(async context =>
+    {
+        await context.Response.WriteAsync("Map Test 1");
+    });
+}
