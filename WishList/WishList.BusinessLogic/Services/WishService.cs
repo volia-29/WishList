@@ -2,6 +2,7 @@
 using WishList.BusinessLogic.Models;
 using WishList.Infrastructure.Data;
 using WishList.Infrastructure.Models;
+using WishList.Services.Exceptions;
 using WishList.Services.Interfaces;
 using WishList.Services.Models;
 
@@ -16,10 +17,9 @@ namespace WishList.Services.Services
             _context = context;
         }
 
-        public async Task AddWishAsync(int userId, CreateWishDto wish)
+        public async Task AddWishAsync(User currentUser, CreateWishDto wish)
         {
-            var user = await _context.Users.FirstAsync(x => x.Id == userId);
-            user.Wishes.Add(new Wish() { Description = wish.Description });
+            currentUser.Wishes.Add(new Wish() { Description = wish.Description });
             await _context.SaveChangesAsync();
         }
 
@@ -69,6 +69,18 @@ namespace WishList.Services.Services
             wish.IsSelected = false;
             await _context.WishFulfillments.Where(w => w.Wish == wish).ExecuteDeleteAsync();
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Wish> GetWishById(int wishId)
+        {
+            var wish = await _context.Wishes.FirstOrDefaultAsync(w => w.Id == wishId);
+
+            if (wish == null)
+            {
+                throw new NotFoundException();
+            }
+
+            return wish;
         }
     }
 }

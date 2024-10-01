@@ -6,7 +6,7 @@ namespace WishList.Services.Interfaces
 {
     public interface IWishService
     {
-        Task AddWishAsync(int userId, CreateWishDto wish);
+        Task AddWishAsync(User currentUser, CreateWishDto wish);
 
         Task<int> DeleteWishAsync(int id);
 
@@ -15,5 +15,6 @@ namespace WishList.Services.Interfaces
         Task<List<GetWishDto>> GetAvailableUserWishesAsync(int userId);
 
         Task ChooseWishAsync(User user, ChoseWishDto choseWish);
+        Task<Wish> GetWishById(int wishId);
     }
 }

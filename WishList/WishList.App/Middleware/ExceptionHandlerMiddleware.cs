@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using WishList.Services.Exceptions;
 
 namespace WishList.App.Middleware
@@ -20,8 +21,14 @@ namespace WishList.App.Middleware
             }
             catch (AppException appException)
             {
-                context.Response.StatusCode = appException.StatusCode;
+                context.Response.StatusCode = (int)appException.StatusCode;
                 var response = new {message = appException.Message};
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            }
+            catch (Exception ex)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                var response = new { message = "Something went wrong" };
                 await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
         }

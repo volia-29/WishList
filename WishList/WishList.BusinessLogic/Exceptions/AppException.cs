@@ -1,8 +1,10 @@
-﻿namespace WishList.Services.Exceptions
+﻿using System.Net;
+
+namespace WishList.Services.Exceptions
 {
     public class AppException : Exception
     {
-        public int StatusCode { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
         public string Message { get; set; }
     }
 }

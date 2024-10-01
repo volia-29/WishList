@@ -1,13 +1,59 @@
+using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using WishList.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using WishList.Services.Services;
-using WishList.Services.Interfaces;
-using static WishList.App.Validators.CreateUserDtoValidator;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using WishList.App.Middleware;
+using WishList.Infrastructure.Data;
+using WishList.Services.Interfaces;
+using WishList.Services.Services;
+using static WishList.App.Validators.CreateUserDtoValidator;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Jwt configuration starts here
+var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
+var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+ .AddJwtBearer(options =>
+ {
+     options.TokenValidationParameters = new TokenValidationParameters
+     {
+         ValidateIssuer = true,
+         ValidateAudience = true,
+         ValidateLifetime = true,
+         ValidateIssuerSigningKey = true,
+         ValidIssuer = jwtIssuer,
+         ValidAudience = jwtIssuer,
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+     };
+ });
+builder.Services.AddSwaggerGen(options =>
+{
+    // add JWT Authentication
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "JWT Authentication",
+        Description = "Enter JWT Bearer token **_only_**",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer", // must be lower case
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+    options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {securityScheme, new string[] { }}
+    });
+});
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -17,7 +63,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateToDoItemDtoValidator>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 var connectionString = builder.Configuration["ConnectionStrings:WishListDB"];
 builder.Services.AddDbContext<WishListContext>(options => options.UseSqlite(connectionString, b => b.MigrationsAssembly("WishList.Infrastructure")));
@@ -33,7 +78,11 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseMiddleware<ExceptionHandlerMiddleware>();
+app.UseMiddleware<GetUserMiddleware>();
 
 app.MapControllers();
 

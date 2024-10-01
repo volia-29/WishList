@@ -13,6 +13,9 @@ namespace WishList.Infrastructure.Models
 
         [Required]
         public string Name { get; set; }
+
+        [Required]
+        public string Password { get; set; }
         public ICollection<Wish> Wishes { get; set; } = new List<Wish>(0);
     }
 }

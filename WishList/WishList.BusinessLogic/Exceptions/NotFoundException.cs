@@ -1,10 +1,12 @@
-﻿namespace WishList.Services.Exceptions
+﻿using System.Net;
+
+namespace WishList.Services.Exceptions
 {
     public class NotFoundException : AppException
     {
         public NotFoundException()
         {
-            StatusCode = 404;
+            StatusCode = HttpStatusCode.NotFound;
             Message = "Not found";
         }
     }

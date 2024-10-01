@@ -1,5 +1,6 @@
 ﻿using WishList.BusinessLogic.Models;
 using WishList.Infrastructure.Models;
+using WishList.Services.Models;
 
 namespace WishList.Services.Interfaces
 {
@@ -14,5 +15,6 @@ namespace WishList.Services.Interfaces
         Task<int> DeleteUser(int id);
 
         Task UpdateUser(int id, string newName);
+        Task<User> FindUserAsync(LoginRequest loginRequest);
     }
 }

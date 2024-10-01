@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WishList.BusinessLogic.Models;
 using WishList.Services.Interfaces;
 
@@ -6,6 +7,7 @@ namespace WishList.App.Controller
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class WishController : ControllerBase
     {
         private readonly IUserService userService;
