@@ -42,7 +42,7 @@ namespace WishList.Services.Services
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Users.Include(u => u.Wishes).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<int> DeleteUser(int id)

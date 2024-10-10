@@ -1,0 +1,38 @@
+﻿@model IEnumerable<WishList.Infrastructure.Models.Wish>
+
+@{
+    ViewData["Title"] = "Wishes of current user";
+    int a = 0;
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="CreateWish" method="get">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        <a asp-action="DeleteWish" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

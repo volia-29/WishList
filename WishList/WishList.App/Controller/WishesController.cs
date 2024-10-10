@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using WishList.BusinessLogic.Models;
 using WishList.Services.Exceptions;
@@ -9,7 +10,7 @@ namespace WishList.App.Controller
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class WishesController : ControllerBase
+    public class WishesController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly IWishService wishService;
 
@@ -18,18 +19,27 @@ namespace WishList.App.Controller
             this.wishService = wishService;
         }
 
+        [HttpGet]
+        [ActionName("CreateWish")]
+        public ActionResult CreateWishView()
+        {
+            return View();
+        }
+
         [HttpPost]
-        public async Task<ActionResult> CreateWishAsync(CreateWishDto wish)
+        [ActionName("CreateWishPost")]
+        public async Task<ActionResult> CreateWishAsync([FromForm] CreateWishDto wish)
         {
             var currentUser = (Infrastructure.Models.User)HttpContext.Items["User"];
             await wishService.AddWishAsync(currentUser, wish);
-            return Ok();
+            return RedirectToAction("GetUserWishes", new { userId = currentUser.Id });
         }
 
         [HttpGet("all-wishes")]
+        [ActionName("GetUserWishes")]
         public async Task<ActionResult> GetUserWishesAsync(int userId)
         {
-            return Ok(await wishService.GetAllUserWishesAsync(userId));
+            return View(await wishService.GetAllUserWishesAsync(userId));
         }
 
         [HttpGet("available-wishes")]
@@ -38,17 +48,19 @@ namespace WishList.App.Controller
             return Ok(await wishService.GetAvailableUserWishesAsync(userId));
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> DeleteWish(int wishId)
+        [HttpGet("DeleteWish")]
+        [ActionName("DeleteWish")]
+        public async Task<ActionResult> DeleteWish(int id)
         {
-            var wish = await wishService.GetWishById(wishId);
+            var wish = await wishService.GetWishById(id);
             var currentUser = (Infrastructure.Models.User)HttpContext.Items["User"];
             if (wish.UserId != currentUser.Id)
             {
                 throw new AppException() { StatusCode = System.Net.HttpStatusCode.BadRequest, Message = "It is a wish of another user." };
             }
 
-            return Ok(await wishService.DeleteWishAsync(wishId));
+            await wishService.DeleteWishAsync(id);
+            return RedirectToAction("GetUserWishes", new { userId = currentUser.Id });
         }
     }
 }
