@@ -67,7 +67,8 @@ namespace WishList.Services.Services
         {
             var wish = await _context.Wishes.Where(w => w.Id == wishId).FirstOrDefaultAsync();
             wish.IsSelected = false;
-            await _context.WishFulfillments.Where(w => w.Wish == wish).ExecuteDeleteAsync();
+            var wishFulfillment = await _context.WishFulfillments.Where(w => w.Wish == wish).FirstOrDefaultAsync();
+            _context.Remove<WishFulfillment>(wishFulfillment);
             await _context.SaveChangesAsync();
         }
 

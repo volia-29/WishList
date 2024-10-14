@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WishList.Infrastructure", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WishList.Services", "WishList.BusinessLogic\WishList.Services.csproj", "{73C1EBBC-CBB4-4B63-94FE-1E527175E0CD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WishList.Services.Tests", "WishList.Services.Tests\WishList.Services.Tests.csproj", "{EA2E336F-8595-40DB-8FBC-B1F1C823E18B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WishList.App.Tests", "WishList.App.Tests\WishList.App.Tests.csproj", "{4ECD0564-005B-4658-8898-B67E63385AF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{73C1EBBC-CBB4-4B63-94FE-1E527175E0CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73C1EBBC-CBB4-4B63-94FE-1E527175E0CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73C1EBBC-CBB4-4B63-94FE-1E527175E0CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA2E336F-8595-40DB-8FBC-B1F1C823E18B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA2E336F-8595-40DB-8FBC-B1F1C823E18B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA2E336F-8595-40DB-8FBC-B1F1C823E18B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA2E336F-8595-40DB-8FBC-B1F1C823E18B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ECD0564-005B-4658-8898-B67E63385AF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ECD0564-005B-4658-8898-B67E63385AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ECD0564-005B-4658-8898-B67E63385AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ECD0564-005B-4658-8898-B67E63385AF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
