@@ -1,0 +1,31 @@
+﻿@page
+@model WishList.Razor.App.Pages.Users.AllUsers
+@{
+    Layout = "_Layout";
+}
+
+<h3>Users</h3>
+
+<div>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>
+                        <a asp-page="/Wishes/AvailableWishes" asp-route-id="@user.Id" class="btn btn-success">Show Wishes</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+
+    </table>
+</div>

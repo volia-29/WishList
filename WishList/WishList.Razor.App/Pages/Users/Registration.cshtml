@@ -1,0 +1,28 @@
+﻿@page
+@model WishList.Razor.App.Pages.Users.RegistrationModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Registration";
+}
+
+<div>
+    <h3>Registration</h3>
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div class="form-group">
+            <label asp-for="Person.Name"></label>
+            <input asp-for="Person.Name" class="form-control" />
+            <span class="text-danger" asp-validation-for="Person.Name"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Person.Password"></label>
+            <input asp-for="Person.Password" class="form-control" />
+            <span class="text-danger" asp-validation-for="Person.Password"></span>
+        </div>
+
+        <div class="my-2">
+            <button class="btn btn-primary">Register</button>
+        </div>
+
+    </form>
+</div>
