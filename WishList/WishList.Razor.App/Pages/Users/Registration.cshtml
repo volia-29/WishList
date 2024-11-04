@@ -20,6 +20,12 @@
             <span class="text-danger" asp-validation-for="Person.Password"></span>
         </div>
 
+        <div class="form-group">
+            <label asp-for="Person.ImageFile"></label>
+            <input type="file" asp-for="Person.ImageFile" class="form-control" />
+            <span class="text-danger" asp-validation-for="Person.ImageFile"></span>
+        </div>
+
         <div class="my-2">
             <button class="btn btn-primary">Register</button>
         </div>

@@ -1,9 +1,13 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 using WishList.Infrastructure.Data;
+using WishList.Infrastructure.Models;
 using WishList.Razor.App.Middleware;
+using WishList.Razor.App.Services;
 using WishList.Services.Interfaces;
 using WishList.Services.Services;
 
@@ -38,11 +42,12 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-var connectionString = builder.Configuration["ConnectionStrings:WishListDB"];
-builder.Services.AddDbContext<WishListContext>(options => options.UseSqlite(connectionString, b => b.MigrationsAssembly("WishList.Infrastructure")));
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+builder.Services.AddDbContext<WishListContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("WishList.Infrastructure")));
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWishService, WishService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
@@ -52,6 +57,23 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var wishListAppContext = scope.ServiceProvider.GetRequiredService<WishListContext>();
+    if (!wishListAppContext.Database.GetService<IRelationalDatabaseCreator>().Exists())
+    {
+        try
+        {
+            wishListAppContext.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Migration has failed: {ex.Message}");
+        }
+    }
 }
 
 app.UseHttpsRedirection();

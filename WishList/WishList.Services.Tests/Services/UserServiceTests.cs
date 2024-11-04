@@ -14,7 +14,7 @@ namespace WishList.Services.Tests.Services
         {
             // Arrange
             var context = GetContext();
-            var service = new UserService(context);
+            var service = new UserService(context, null);
 
             // Act
             var act = async () => await service.FindUserAsync(new LoginRequest());
@@ -28,7 +28,7 @@ namespace WishList.Services.Tests.Services
         {
             // Arrange
             var context = GetContext();
-            var service = new UserService(context);
+            var service = new UserService(context, null);
             var user = new CreateUserDto()
             {
                 Name = "Test",
@@ -53,7 +53,7 @@ namespace WishList.Services.Tests.Services
         {
             // Arrange
             var context = GetContext();
-            var service = new UserService(context);
+            var service = new UserService(context, null);
             var user = new CreateUserDto()
             {
                 Name = "Test",

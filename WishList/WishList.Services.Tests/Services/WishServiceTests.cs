@@ -9,9 +9,9 @@ namespace WishList.Services.Tests.Services
     public class WishServiceTests
     {
         [Theory]
-        [InlineData(false, true, true)]
-        [InlineData(true, false, false)]
-        public async Task ChooseWishAsync_ChoosingWishes(bool defaultState, bool action, bool expectedResult)
+        [InlineData(0, true, 1)]
+        [InlineData(1, false, 0)]
+        public async Task ChooseWishAsync_ChoosingWishes(int defaultState, bool action, int expectedResult)
         {
             // Arrange
             var context = GetContext();
@@ -40,7 +40,7 @@ namespace WishList.Services.Tests.Services
             context.Users.Add(user1);
             context.Users.Add(user2);
 
-            if (defaultState)
+            if (defaultState == 1)
             {
                 context.WishFulfillments.Add(new WishFulfillment()
                 {

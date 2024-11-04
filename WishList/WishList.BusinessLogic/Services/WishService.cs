@@ -19,7 +19,13 @@ namespace WishList.Services.Services
 
         public async Task AddWishAsync(User currentUser, CreateWishDto wish)
         {
-            currentUser.Wishes.Add(new Wish() { Description = wish.Description });
+            var new_wish = new Wish()
+            {
+                Id = await _context.Wishes.CountAsync() + 1,
+                Description = wish.Description
+            };
+            await _context.Wishes.AddAsync(new_wish);
+            currentUser.Wishes.Add(new_wish);
             await _context.SaveChangesAsync();
         }
 
@@ -36,7 +42,7 @@ namespace WishList.Services.Services
         public async Task<List<GetWishDto>> GetAvailableUserWishesAsync(int userId)
         {
             return await _context.Wishes
-                .Where(w => w.UserId == userId && !w.IsSelected)
+                .Where(w => w.UserId == userId && w.IsSelected == 0)
                 .Select(w => new GetWishDto() { Description = w.Description, Id = w.Id })
                 .ToListAsync();
         }
@@ -52,7 +58,7 @@ namespace WishList.Services.Services
         private async Task ChooseWishAsync(User user, int wishId)
         {
             var wish = await _context.Wishes.Where(w => w.Id == wishId).FirstOrDefaultAsync();
-            wish.IsSelected = true;
+            wish.IsSelected = 1;
             await _context.WishFulfillments.AddAsync(
                 new WishFulfillment()
                 {
@@ -66,7 +72,7 @@ namespace WishList.Services.Services
         private async Task UnchooseWishAsync(int wishId)
         {
             var wish = await _context.Wishes.Where(w => w.Id == wishId).FirstOrDefaultAsync();
-            wish.IsSelected = false;
+            wish.IsSelected = 0;
             var wishFulfillment = await _context.WishFulfillments.Where(w => w.Wish == wish).FirstOrDefaultAsync();
             _context.Remove<WishFulfillment>(wishFulfillment);
             await _context.SaveChangesAsync();

@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  wish-list-db:
+    container_name: wish-list-db
+    image: "mcr.microsoft.com/mssql/server:latest"
+    user: root
+    ports:
+          - "1433:1433"
+    environment:
+      SA_PASSWORD: "Mydatabase!1"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - "./data/:/var/opt/mssql/data/"
+      - "./log/:/var/opt/mssql/log/"
+      - "./secrets/:/var/opt/mssql/secrets/"      
+    networks:
+      - wish-list-app-net
+  wish-list-app:
+    container_name: wish-list-app
+    build: .
+    ports:
+      - "5227:5227"
+      - "7097:7097"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: "http://+:5227"
+      DB_CONNECTION_STRING: "Server=wish-list-db;Database=WishListAppDb; User Id=sa; Password=Mydatabase!1; TrustServerCertificate=True;"
+    networks:
+      - wish-list-app-net
+    depends_on:
+      - wish-list-db
+networks:
+  wish-list-app-net:
+    driver: bridge
+    attachable: true

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Security.Cryptography;
 using Microsoft.AspNet.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,13 @@ namespace WishList.Services.Services
     public class UserService : IUserService
     {
         private readonly WishListContext _context;
+        private readonly IFileService fileService;
         private readonly PasswordHasher passwordHasher;
 
-        public UserService(WishListContext context)
+        public UserService(WishListContext context, IFileService fileService)
         {
             _context = context;
+            this.fileService = fileService;
             passwordHasher = new PasswordHasher();
         }
 
@@ -26,9 +29,19 @@ namespace WishList.Services.Services
         {
             var newUser = new User()
             {
+                Id = await _context.Users.CountAsync() + 1,
                 Name = user.Name,
                 Password = new PasswordHasher().HashPassword(user.Password)
             };
+            if (user.ImageFile != null)
+            {
+                if (fileService.SaveImage(user.ImageFile, out var exception, out var fileName))
+                {
+                    newUser.ProfilePicture = fileName;  // name of image
+                }
+                else
+                    throw new AppException() { Message = exception };
+            }
             await _context.Users.AddAsync(newUser);
             await _context.SaveChangesAsync();
         }
