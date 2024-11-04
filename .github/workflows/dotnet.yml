@@ -21,8 +21,8 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Restore dependencies
-      run: dotnet restore ./WishList/WishList/WishList.sln
+      run: dotnet restore ./WishList/WishList.sln
     - name: Build
-      run: dotnet build ./WishList/WishList/WishList.sln --no-restore
+      run: dotnet build ./WishList/WishList.sln --no-restore
     - name: Test
-      run: dotnet test ./WishList/WishList/WishList.sln --no-build --verbosity normal
+      run: dotnet test ./WishList/WishList.sln --no-build --verbosity normal
